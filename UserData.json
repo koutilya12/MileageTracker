@@ -1,0 +1,38 @@
+[
+  {
+    "name": "John Doe",
+    "age": 25,
+    "userRole": "user",
+    "img": "../../assets/images/user1.png"
+  },
+  {
+    "name": "Kevin",
+    "age": 32,
+    "userRole": "user",
+    "img": "../../assets/images/user2.png"
+  },
+  {
+    "name": "Tony",
+    "age": 27,
+    "userRole": "user",
+    "img": "../../assets/images/user3.png"
+  },
+  {
+    "name": "Mike",
+    "age": 22,
+    "userRole": "admin",
+    "img": "../../assets/images/user4.png"
+  },
+  {
+    "name": "Willie",
+    "age": 31,
+    "userRole": "user",
+    "img": "../../assets/images/user5.png"
+  },
+  {
+    "name": "Scott",
+    "age": 30,
+    "userRole": "user",
+    "img": "../../assets/images/user6.png"
+  }
+] 
