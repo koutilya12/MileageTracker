@@ -8,7 +8,7 @@ import {
     ImageBackground
 } from 'react-native'
 
-const LandingPage = () => {
+const SignUp = () => {
     return (
         <View style={styles.flexView}>
             <Text style={styles.descText}>Create an account to get started</Text>
@@ -99,4 +99,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default LandingPage
+export default SignUp

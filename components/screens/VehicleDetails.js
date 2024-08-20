@@ -67,7 +67,7 @@ const VehicleDetails = () => {
             />
             {/* </View> */}
             <View style={styles.bodyBottom}>
-                <TouchableOpacity style={styles.cancelButton}>
+                <TouchableOpacity onPress={{}} style={styles.cancelButton}>
                     <Text style={styles.cancelText}>Cancel</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.addButton}>

@@ -30,11 +30,13 @@ const VerifyPassword = () => {
                 </View>
             </View>
             <View style={styles.buttonView}>
-                <TouchableOpacity  style={styles.continueButton}>
-                <Text  style={styles.continueText}>Continue</Text>
+                <TouchableOpacity style={styles.continueButton}>
+                    <Text style={styles.continueText}>Continue</Text>
                 </TouchableOpacity>
-                
-                <Text style={styles.skipText}>Skip</Text>
+
+                <TouchableOpacity style={styles.skipButton}>
+                    <Text style={styles.skipText}>Skip</Text>
+                </TouchableOpacity>
             </View>
         </LinearGradient>
     )
@@ -79,17 +81,31 @@ const styles = StyleSheet.create({
         backgroundColor: "#252f40",
         borderRadius: 5,
         alignItems: "center",
-        justifyContent: "center"
+        justifyContent: "center",
+        marginLeft: 40,
     },
     continueText: {
         fontSize: 20,
         color: "white",
     },
     skipButton: {
-
+        height: 40,
+        width: "30%",
+        margin: 20,
+        alignItems: "center",
+        justifyContent: "center",
+        marginLeft: "35%",
+    },
+    skipText: {
+        fontSize: 20,
+        textAlign: "center",
+        color: "#252f40",
     },
     buttonView: {
-
+        position: "absolute",
+        bottom: 0,
+        right: 0,
+        left: 0,
     }
 })
 

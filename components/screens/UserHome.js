@@ -7,12 +7,15 @@ import {
     TouchableOpacity,
 } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome';
-import AddVehicle from './AddVehicle'
+// import AddVehicle from './AddVehicle'
 import { LinearGradient } from 'expo-linear-gradient';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import AddVehicle from '../../components/screens/AddVehicle'
+import CreateAccount from '../../components/screens/CreateAccount'
+import VehicleList from '../../components/screens/VehiclesList'
 
-const myIcon = <Icon name="user-circle-o" size={30} color="#900" />
+ const RenderUserHome = (props) => {
 
-const RenderUserHome = () => {
     return (
         <View>
             <View style={styles.descTopView}>
@@ -27,7 +30,7 @@ const RenderUserHome = () => {
                 <TouchableOpacity
                     style={styles.buttonStyle}
                     onPress={() => {
-                        navigation.navigate('Home')
+                        props.navigation.navigate('VehicleDetails')
                     }}
                 >
                     <Text style={styles.buttonText}>Add Vehicle</Text>
@@ -41,7 +44,7 @@ const RenderUserHome = () => {
     )
 }
 
-const UserHome = () => {
+const UserHome = ({navigation}) => {
     return (
         <LinearGradient colors={["#b0e0e6", "white"]} style={styles.container} >
             <View style={styles.headSection}>
@@ -56,7 +59,7 @@ const UserHome = () => {
             <View style={styles.body}>
                 <Text style={styles.nameText}>Hi Snack Muncher,</Text>
             </View>
-            {1 ? <AddVehicle /> : <RenderUserHome />}
+            {0 ? <AddVehicle /> : <RenderUserHome navigation={navigation} />}
         </LinearGradient>
     )
 }

@@ -6,90 +6,53 @@ import {
     StyleSheet,
     TouchableOpacity
 } from 'react-native'
-import userData from '../../UserData.json'
+import userData from '../../UserData'
+import Icon from 'react-native-vector-icons/FontAwesome'
 
-// const RenderUserProfiles = () => {
-//     return (
-//         <>
-//             {userData.map((item) => {
-//                 let img = item.img
-//                 return (
-//                     <View style={styles.addView}>
-//                         <TouchableOpacity>
-//                             <Image
-//                                 style={styles.addImage}
-//                                 source={require('../../assets/images/addicon.png')}
-//                             />
-//                         </TouchableOpacity>
-//                         <Text style={styles.userName}>{item.name}</Text>
-//                     </View>
-//                 )
-
-//             })}
-//         </>
-//     )
-// }
-
-const RenderUserProfiles = () => {
-    return (
-        <>
-            <View style={styles.addView}>
-                <TouchableOpacity>
-                    <Image
-                        style={styles.addImage}
-                        source={require('../../assets/images/addicon.png')}
-                    />
-                </TouchableOpacity>
-                <Text style={{ margin: 10 }}>John Doe</Text>
-            </View>
-
-            <View style={styles.addView}>
-                <TouchableOpacity>
-                    <Image
-                        style={styles.addImage}
-                        source={require('../../assets/images/addicon.png')}
-                    />
-                </TouchableOpacity>
-                <Text style={{ margin: 10 }}>Kevin</Text>
-            </View>
-
-            <View style={styles.addView}>
-                <TouchableOpacity>
-                    <Image
-                        style={styles.addImage}
-                        source={require('../../assets/images/addicon.png')}
-                    />
-                </TouchableOpacity>
-                <Text style={{ margin: 10 }}>Tony</Text>
-            </View>
-
-            <View style={styles.addView}>
-                <TouchableOpacity>
-                    <Image
-                        style={styles.addImage}
-                        source={require('../../assets/images/addicon.png')}
-                    />
-                </TouchableOpacity>
-                <Text style={{ margin: 10 }}>Mike</Text>
-            </View>
-        </>
-    )
-}
-
-const UserProfile = () => {
+const UserProfile = (props) => {
 
     // useEffect(async () => {
     //     const userDetails = await AsyncStorage.getItem('login');
     //     userDetails.userId ? "navigate to password screen" : null
     // })
 
+    const onPressHandler = () => {
+        props.navigation.navigate('UserTitle')
+    }
+
     return (
         <View style={styles.qView}>
             <Text style={styles.qText}>Who are you?</Text>
             <View style={styles.addContainer}>
-                <RenderUserProfiles />
+                {
+                    userData.map((item) => {
+                        return (
+                            <View style={styles.addView}>
+                                {
+                                    item.img ?
+                                        <TouchableOpacity onPress={onPressHandler}>
+                                            <Image
+                                                style={styles.addImage}
+                                                source={item.img}
+                                            />
+                                        </TouchableOpacity> :
+                                        <View style={{ borderWidth: 2, borderRadius: 100, borderColor: "grey" }}>
+                                            <View style={{ borderWidth: 2, borderRadius: 100, borderColor: "white" }}>
+                                                <View style={styles.iconUser}>
+                                                    <Icon name="user" size={25} color="white" />
+                                                </View>
+                                            </View>
+                                        </View>
+                                }
+                                <Text style={styles.userName}>{item.name}</Text>
+                            </View>
+                        )
+                    })
+                }
                 <View style={styles.addView}>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => {
+                        props.navigation.navigate('CreateAccount')}}
+                    >
                         <Image
                             style={styles.addImage}
                             source={require('../../assets/images/addicon.png')}
@@ -119,9 +82,9 @@ const styles = StyleSheet.create({
         flexDirection: "row"
     },
     addImage: {
-        height: 50,
-        width: 50,
-        borderRadius: 80,
+        height: 60,
+        width: 60,
+        borderRadius: 100,
     },
     qText: {
         fontSize: 20,
@@ -137,8 +100,19 @@ const styles = StyleSheet.create({
         margin: 10
     },
     userName: {
-        margin: 10,
+        margin: 15,
         color: "#07366E"
+    },
+    iconUser: {
+        height: 50,
+        width: 50,
+        backgroundColor: "#3B76DE",
+        // backgroundColor: "#4A89D1",
+        borderRadius: 100,
+        alignItems: "center",
+        justifyContent: "center",
+        borderWidth: 1,
+        borderColor: "grey"
     }
 })
 

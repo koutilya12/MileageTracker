@@ -9,7 +9,7 @@ import SignUp from "./SignUp"
 import UserProfile from "./UserProfile"
 import { LinearGradient } from "expo-linear-gradient"
 
-const LandingPage = () => {
+const LandingPage = ({navigation}) => {
 
     fetchUserData = async () => {
             const userDetails = await AsyncStorage.getItem('username');
@@ -31,7 +31,7 @@ const LandingPage = () => {
                     />
                     <Text style={styles.titleText}>Mileage Tracker</Text>
                 </View>
-                {0 ? <SignUp /> : <UserProfile />}
+                {0 ? <SignUp /> : <UserProfile navigation={navigation} />}
             </LinearGradient>
         </View >
     )
