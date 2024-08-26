@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
     Text,
     View,
@@ -8,19 +8,11 @@ import {
 } from 'react-native'
 import { Dropdown } from 'react-native-element-dropdown';
 
-const data = [
-    { label: 'Item 1', value: '1' },
-    { label: 'Item 2', value: '2' },
-    { label: 'Item 3', value: '3' },
-    { label: 'Item 4', value: '4' },
-    { label: 'Item 5', value: '5' },
-    { label: 'Item 6', value: '6' },
-    { label: 'Item 7', value: '7' },
-    { label: 'Item 8', value: '8' },
-];
-
-
-const RenderDropdown = () => {
+const RenderDropdown = (props) => {
+    let data = []
+    props.vehiclesList.map(item => data.push({ label: item.vehicleName, value: `${item.id}` }))
+    console.log('????3', data)
+    console.log('????4', data[0].value)
     return (
         <Dropdown
             style={styles.dropdown}
@@ -31,9 +23,9 @@ const RenderDropdown = () => {
             valueField="value"
             placeholder={'Select item'}
             searchPlaceholder="Search..."
-            value={""}
+            value={props.selectedVechicle != '' ? props.selectedVechicle : data[0].value}
             onChange={item => {
-                setValue(item.value);
+                props.setSelectedVehicle(item.value);
                 console.log('dropdown selected')
             }}
         //   renderLeftIcon={() => (
@@ -48,11 +40,13 @@ const RenderDropdown = () => {
     )
 }
 
-const AddVehicle = () => {
+const AddVehicle = (props) => {
+    const [selectedVechicle,setSelectedVehicle] = useState(props.vehiclesList[0].id)
+    console.log('====>1', props.vehiclesList)
     return (
         <View style={styles.body}>
             <Text style={styles.descText}>Here is everything about your</Text>
-            <RenderDropdown />
+            <RenderDropdown vehiclesList={props.vehiclesList} selectedVechicle = {selectedVechicle} setSelectedVehicle = {setSelectedVehicle} />
             <Image
                 style={styles.bikeStyle}
                 source={require("../../assets/images/triumph400.png")}
@@ -65,7 +59,7 @@ const AddVehicle = () => {
             <TouchableOpacity
                 style={styles.buttonStyle}
                 onPress={() => {
-                    navigation.navigate('Home')
+                    props.navigation.navigate('AddRefuelling', {userId: props.user.id, vehicle : props.vehiclesList.find(data => data.id === selectedVechicle)})
                 }}
             >
                 <Text style={styles.buttonText}>Add Refuelling</Text>

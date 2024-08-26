@@ -11,19 +11,51 @@ import {
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Dropdown } from 'react-native-element-dropdown';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview';
+import { create } from 'zustand';
+import { setItem, getItem } from '@/utils/AsyncStorage';
 
 const data = [
-    { label: 'Item 1', value: '1' },
-    { label: 'Item 2', value: '2' },
-    { label: 'Item 3', value: '3' },
-    { label: 'Item 4', value: '4' },
-    { label: 'Item 5', value: '5' },
-    { label: 'Item 6', value: '6' },
-    { label: 'Item 7', value: '7' },
-    { label: 'Item 8', value: '8' },
+    { label: '2 Wheeler', value: '2wheeler' },
+    { label: '3 Wheeler', value: '3wheeler' },
+    { label: '4 wheeler', value: '4wheeler' },
+    { label: 'Other', value: 'other' },
 ];
 
-const VehicleDetails = () => {
+const defaultVehicle = {
+    vehicleName: "",
+    vehicleType: '',
+    engineCC: ''
+}
+
+const VehicleStore = create((set) => ({
+    vehicle: defaultVehicle,
+    setVehicle: (newVehicle) => set((state) => ({ vehicle: newVehicle }))
+}))
+
+const VehicleDetails = ({navigation}) => {
+
+    const vehicle  = VehicleStore((state) => state.vehicle)
+    const setVehicle = VehicleStore((state) => state.setVehicle)
+
+    const onPressHandler = async () => {
+
+        let user = await getItem("loggedInUser")
+        let key = "vehicleDetails_" + user.id;
+        let vehicles = await getItem(key);
+        console.log('vehicles',vehicles)
+        if(!vehicles){
+            let vehicle1 = { ...vehicle}
+            vehicle1.id = 1
+            setItem(key, [vehicle1])
+        } else {
+            let vehicle1 = { ...vehicle}
+            vehicle1.id = vehicles.length + 1
+            vehicles.push(vehicle1)
+            setItem(key, vehicles)
+        }
+        navigation.navigate("AddSuccess")
+    }
+
     return (
 
         <View style={styles.body}>
@@ -33,9 +65,15 @@ const VehicleDetails = () => {
             </View>
             {/* <View> */}
             <TextInput
+                value={vehicle.vehicleName}
                 style={styles.textInput}
                 placeholder='Vehicle Name'
                 placeholderTextColor="#8392AB"
+                onChangeText={(text) => {
+                    let vehicle1 = { ...vehicle }
+                    vehicle1["vehicleName"] = text
+                    setVehicle(vehicle1)
+                }}
             />
             <Dropdown
                 style={styles.dropdown}
@@ -53,6 +91,9 @@ const VehicleDetails = () => {
                 //   value={value}
                 onChange={item => {
                     // setValue={item.value}
+                    let vehicle1 = {...vehicle}
+                    vehicle1["vehicleType"] = item.value
+                    setVehicle(vehicle1)
                 }}
             //   renderLeftIcon={() => {
             //     <Icon style={styles.icon} color="black" name="down" size={20} />
@@ -61,16 +102,26 @@ const VehicleDetails = () => {
 
             />
             <TextInput
+                value={vehicle.engineCC}
                 style={styles.textInput}
+                keyboardType= "number-pad"
                 placeholder='Engine CC'
                 placeholderTextColor="#8392AB"
+                onChangeText={text => {
+                    let vehicle1 = {...vehicle}
+                    vehicle1["engineCC"] = text
+                    setVehicle(vehicle1)
+                }}
             />
             {/* </View> */}
             <View style={styles.bodyBottom}>
-                <TouchableOpacity onPress={{}} style={styles.cancelButton}>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.cancelButton}>
                     <Text style={styles.cancelText}>Cancel</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.addButton}>
+                <TouchableOpacity
+                onPress={onPressHandler}
+                  style={styles.addButton}
+                >
                     <Text style={styles.addText}>Add</Text>
                 </TouchableOpacity>
             </View>

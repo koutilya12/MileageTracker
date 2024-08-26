@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState,useEffect } from 'react'
 import {
     Text,
     View,
@@ -12,13 +12,18 @@ import data from '../../UserData'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import IconNew from 'react-native-vector-icons/Fontisto'
 import bikeData from '../../VehicleData'
+import {getItem,setItem} from '../../utils/AsyncStorage';
+import { useIsFocused} from '@react-navigation/native';
+
+
 
 const Item = (props) => {
 
+
     const renderIcon = (type) => {
         switch (type) {
-            case "2": return <Icon name="motorcycle" size={80} color="grey" />
-            case "4": return <IconNew name="automobile" size={120} color="grey" />
+            case "2wheeler": return <Icon name="motorcycle" size={80} color="grey" />
+            case "4wheeler": return <IconNew name="automobile" size={120} color="grey" />
             case "3": return
         }
     }
@@ -39,9 +44,9 @@ const Item = (props) => {
                         <Icon onPress={() => {deleteOnPress(props.index)}} name="trash-o" size={25} color="#EF0B39" style={{position: "absolute", right: 0, padding: 10}}/>
                     </ImageBackground> :
                     <View style={styles.iconView}>
-                        {renderIcon(props.data.type[0])}
+                        {renderIcon(props.data.vehicleType)}
                         <Icon onPress={() => {deleteOnPress(props.index)}} name="trash-o" size={25} color="#EF0B39" style={{position: "absolute", right:0, top: 0, padding: 10}}/>
-                        <Text style={props.data.type[0] === "2" ? styles.noImageStyle : styles.noImageCar}>No Image</Text>
+                        <Text style={props.data.vehicleType === "2" ? styles.noImageStyle : styles.noImageCar}>No Image</Text>
                     </View>
             }
 
@@ -51,8 +56,8 @@ const Item = (props) => {
                     <Text style={{ fontSize: 10, marginTop: 5 }}>{props.data.type} </Text>
                 </View>
                 <View style={styles.ccInfo}>
-                    <Text>{props.data.cc !== "NA" ? props.data.cc : null} </Text>
-                    <Text>{props.data.cc !== "NA" ? "CC" : "Not Applicable"}</Text>
+                    <Text>{props.data.engineCC !== "NA" ? props.data.engineCC : null} </Text>
+                    <Text>{props.data.engineCC !== "NA" ? "CC" : "Not Applicable"}</Text>
                 </View>
 
             </View>
@@ -62,14 +67,42 @@ const Item = (props) => {
 
 const FlatListTest = () => {
 const [isRefreshing, setIsRefreshing] = useState(false)
+const [vehicles, setVehicles] = useState([])
+const isFocused = useIsFocused();
+
+
+    // useEffect(() => {
+
+    //     getItem('loggedInUser').then(user => {
+    //         let key = "vehicleDetails_" + user.id;
+    //         getItem(key).then(rep => {
+    //             setVehicles(rep)
+    //         })
+    //     })
+    // }, [])
+
+    useEffect(() => {
+        if (isFocused) {
+          // Perform actions you want when the screen is focused.
+          // This could be fetching data, re-rendering components, or any other refresh logic.
+          getItem('loggedInUser').then(user => {
+            let key = "vehicleDetails_" + user.id;
+            getItem(key).then(rep => {
+                setVehicles(rep)
+            })
+        })
+        }
+      }, [isFocused]);
 
   const onRefresh = () => {
     setIsRefreshing(false)
   }
 
     return (
-        <FlatList
-            data={bikeData}
+        <View>
+        { vehicles &&
+            <FlatList
+            data={vehicles}
             // onRefresh={onRefresh}
             // refreshing={isRefreshing}
             refreshControl={
@@ -79,7 +112,11 @@ const [isRefreshing, setIsRefreshing] = useState(false)
                     tintColor="red"/>
             }
             renderItem={({ item, index }) => <Item data={item} index={index} onRefresh={onRefresh}/>}
-        />
+        /> 
+        }
+        </View>
+
+
     )
 }
 

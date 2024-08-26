@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
     Text,
     View,
@@ -8,18 +8,43 @@ import {
 import SignUp from "./SignUp"
 import UserProfile from "./UserProfile"
 import { LinearGradient } from "expo-linear-gradient"
+import {getItem,setItem} from '../../utils/AsyncStorage';
+import { useIsFocused} from '@react-navigation/native';
 
 const LandingPage = ({navigation}) => {
+    const isFocused = useIsFocused();
+    // fetchUserData = async () => {
+    //         const userDetails = await AsyncStorage.getItem('username');
+    //         userDetails.userId ? renderUserData() : null
+    // }
+    const [users, setUsers] = useState([])
 
-    fetchUserData = async () => {
-            const userDetails = await AsyncStorage.getItem('username');
-            userDetails.userId ? renderUserData() : null
-    }
+    useEffect(() => {
 
-    useEffect(async () => {
-        const loginDetails = await AsyncStorage.getItem('login');
-        loginDetails.userId ? "navigate to password screen" : fetchUserData()
-    })
+        getItem('users').then(rep => {
+            console.log('users yup',rep)
+            setUsers(Object.values(rep))
+            //clear();
+        }, [])
+
+        getItem('loggedInUser').then(rep => {
+            if(rep && rep.email) {
+                navigation.navigate("SubmitPassword", {item : rep})
+            }
+        })
+    }, [])
+
+    useEffect(() => {
+        if (isFocused) {
+          // Perform actions you want when the screen is focused.
+          // This could be fetching data, re-rendering components, or any other refresh logic.
+          getItem('users').then(rep => {
+              console.log('users yup',rep)
+              setUsers(Object.values(rep))
+              //clear();
+          })
+        }
+      }, [isFocused]);
 
     return (
         <View style={styles.mainView}>
@@ -31,7 +56,7 @@ const LandingPage = ({navigation}) => {
                     />
                     <Text style={styles.titleText}>Mileage Tracker</Text>
                 </View>
-                {0 ? <SignUp /> : <UserProfile navigation={navigation} />}
+                {users && users.length > 0 ? <UserProfile navigation={navigation} users = {users}/> : <SignUp navigation={navigation} />  }
             </LinearGradient>
         </View >
     )

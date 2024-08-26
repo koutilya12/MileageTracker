@@ -8,11 +8,12 @@ import {
     ImageBackground
 } from 'react-native'
 
-const SignUp = () => {
+const SignUp = (props) => {
     return (
         <View style={styles.flexView}>
             <Text style={styles.descText}>Create an account to get started</Text>
             <TouchableOpacity
+            onPress={() => props.navigation.navigate("CreateAccount")}
                 style={styles.buttonStyle}
             >
                 <Text style={styles.buttonText}>Sign Up</Text>

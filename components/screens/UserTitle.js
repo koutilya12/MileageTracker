@@ -12,7 +12,7 @@ import Refuelling from '../../components/screens/RefuellingDetails'
 import Performance from '../../components/screens/PerformanceTab'
 import Icon from 'react-native-vector-icons/FontAwesome'
 
-const UserTitle = () => {
+const UserTitle = ({route}) => {
 
     const Tab = createBottomTabNavigator()
 

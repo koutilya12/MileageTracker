@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
     Text,
     View,
@@ -13,8 +13,9 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import AddVehicle from '../../components/screens/AddVehicle'
 import CreateAccount from '../../components/screens/CreateAccount'
 import VehicleList from '../../components/screens/VehiclesList'
+import {getItem,setItem} from '../../utils/AsyncStorage';
 
- const RenderUserHome = (props) => {
+ const RenderUserHome = ({navigation}) => {
 
     return (
         <View>
@@ -30,7 +31,7 @@ import VehicleList from '../../components/screens/VehiclesList'
                 <TouchableOpacity
                     style={styles.buttonStyle}
                     onPress={() => {
-                        props.navigation.navigate('VehicleDetails')
+                        navigation.navigate('VehicleDetails')
                     }}
                 >
                     <Text style={styles.buttonText}>Add Vehicle</Text>
@@ -45,6 +46,28 @@ import VehicleList from '../../components/screens/VehiclesList'
 }
 
 const UserHome = ({navigation}) => {
+
+    const [user, setUser] = useState({})
+    const [detailsFlag, setDetailsFlag] = useState(false)
+    let [vehiclesList, setVehiclesList] = useState({})
+
+    useEffect(() => {
+        getItem('loggedInUser').then(userRep => {
+            console.log('---->1', userRep)
+            setUser(userRep)
+            getItem('vehicleDetails_'+userRep.id).then(rep => {
+                console.log('---->2', rep)
+                console.log('---->3', userRep)
+                setVehiclesList(rep)
+                console.log('---->4', vehiclesList)
+                if(rep)
+                    setDetailsFlag(true)
+            })
+        })
+
+
+    }, [])
+
     return (
         <LinearGradient colors={["#b0e0e6", "white"]} style={styles.container} >
             <View style={styles.headSection}>
@@ -57,9 +80,11 @@ const UserHome = ({navigation}) => {
                 />
             </View>
             <View style={styles.body}>
-                <Text style={styles.nameText}>Hi Snack Muncher,</Text>
+                <Text style={styles.nameText}>Hi {user.name},</Text>
+        {console.log('????1', vehiclesList)}
+
             </View>
-            {0 ? <AddVehicle /> : <RenderUserHome navigation={navigation} />}
+            {detailsFlag ? <AddVehicle navigation={navigation} vehiclesList={vehiclesList} user={user} /> : <RenderUserHome navigation={navigation}/>}
         </LinearGradient>
     )
 }

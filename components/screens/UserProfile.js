@@ -4,10 +4,11 @@ import {
     View,
     Image,
     StyleSheet,
-    TouchableOpacity
+    TouchableOpacity,
 } from 'react-native'
 import userData from '../../UserData'
 import Icon from 'react-native-vector-icons/FontAwesome'
+import { getItem } from '@/utils/AsyncStorage'
 
 const UserProfile = (props) => {
 
@@ -25,7 +26,7 @@ const UserProfile = (props) => {
             <Text style={styles.qText}>Who are you?</Text>
             <View style={styles.addContainer}>
                 {
-                    userData.map((item) => {
+                    props.users.map((item) => {
                         return (
                             <View style={styles.addView}>
                                 {
@@ -39,7 +40,7 @@ const UserProfile = (props) => {
                                         <View style={{ borderWidth: 2, borderRadius: 100, borderColor: "grey" }}>
                                             <View style={{ borderWidth: 2, borderRadius: 100, borderColor: "white" }}>
                                                 <View style={styles.iconUser}>
-                                                    <Icon name="user" size={25} color="white" />
+                                                    <Icon onPress={() => {props.navigation.navigate("SubmitPassword", {item})}} name="user" size={25} color="white" />
                                                 </View>
                                             </View>
                                         </View>

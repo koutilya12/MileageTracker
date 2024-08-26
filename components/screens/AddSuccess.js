@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import {
     Text,
     View,
@@ -8,7 +8,14 @@ import {
 } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
 
-const AddSuccess = () => {
+const AddSuccess = ({navigation}) => {
+
+    useEffect(async () => {
+        await setTimeout(() => {
+            navigation.navigate("UserTitle")
+        }, 5000)
+        }, [])
+
     return (
         <LinearGradient colors={["#b0e0e6", "white"]} style={styles.body} >
             <View style={styles.bgImageView}>
