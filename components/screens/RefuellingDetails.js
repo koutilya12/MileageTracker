@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
     Text,
     View,
@@ -9,22 +9,46 @@ import {
 } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import rData from '../../RefuellingData'
+import {getItem,setItem} from '../../utils/AsyncStorage';
+import { useIsFocused} from '@react-navigation/native';
+
 
 const RefuellingDetails = () => {
+    const isFocused = useIsFocused();
+
+    const [refuelList, setRefuelList ] = useState([])
+
+
+    useEffect(() => {
+        if (isFocused) {
+            getItem("loggedInUser").then(user => {
+                getItem("selectedVehicle_").then(vehicle => {
+                    if(vehicle){
+                        getItem("refuellingList_"+vehicle.id+user.id).then(val => {
+                            setRefuelList(val)
+                        })
+                    }
+                })
+
+            })
+
+        }
+      }, [isFocused]);
+
     const [limit, setLimit] = useState(true)
 
     const renderList = () => {
-        data = limit ? rData.slice(0, 4) : rData
+        data = limit ? refuelList?.slice(0, 4) : refuelList
         return (
-            data.map(item => {
+            data?.map(item => {
                 return (
                     <View style={styles.listContent}>
                         <Image source={require('../../assets/images/refuelImage.png')} style={styles.imageStyle} />
                         <View style={styles.dataView}>
-                            <Text style={styles.dateStyle}>{item.date}</Text>
-                            <Text style={styles.fuelStyle}>{item.fuel}</Text>
+                            <Text style={styles.dateStyle}>{item.refuellingDate}</Text>
+                            <Text style={styles.fuelStyle}>{item.fuel} L</Text>
                         </View>
-                        <Text style={styles.costStyle}>{item.cost}</Text>
+                        <Text style={styles.costStyle}>₹.{item.total}</Text>
                     </View>
                 )
             })

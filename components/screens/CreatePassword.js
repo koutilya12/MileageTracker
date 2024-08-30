@@ -10,7 +10,7 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 
 
-const CreatePassword = ({submitUser}) => {
+const CreatePassword = (props) => {
     const inputRefs = useRef([]);
     const inputRefNew = useRef([]);
     let passcode = []
@@ -74,7 +74,7 @@ const CreatePassword = ({submitUser}) => {
             password = password + value
         })
         if(allowToSubmit){
-            submitUser(password)
+            props.submitUser(password)
         }
     }
 

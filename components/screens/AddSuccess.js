@@ -8,10 +8,10 @@ import {
 } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
 
-const AddSuccess = ({navigation}) => {
+const AddSuccess = ({navigation, route}) => {
 
-    useEffect(async () => {
-        await setTimeout(() => {
+    useEffect( () => {
+         setTimeout(() => {
             navigation.navigate("UserTitle")
         }, 5000)
         }, [])
@@ -25,12 +25,14 @@ const AddSuccess = ({navigation}) => {
                 >
                     <Image
                         style={styles.bikeImage}
-                        source={require('../../assets/images/triumph400.png')}
+                        source={{
+                            uri: route.params.imgSrc
+                        }}
                     />
                 </ImageBackground>
             </View>
-            <Text style={styles.nameStyle}>Yamaha R15</Text>
-            <Text style={styles.nameStyleTwo}>Vehicle Added!</Text>
+            <Text style={styles.nameStyle}>{route.params.vehicleName}</Text>
+            <Text style={styles.nameStyleTwo}>{route.params.message}</Text>
             <Image
                 style={styles.downImage}
                 source={require('../../assets/images/trafficdesign.png')}

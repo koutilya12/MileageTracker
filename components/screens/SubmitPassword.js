@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useRef,useEffect } from 'react'
 import {
     Text,
     View,
@@ -9,8 +9,23 @@ import {
 } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient';
 import { getItem, setItem } from '../../utils/AsyncStorage';
+import { useIsFocused} from '@react-navigation/native';
+
 
 const SubmitPassword = ({ route, navigation }) => {
+    const isFocused = useIsFocused();
+
+
+    // useEffect(() => {
+    //     if (isFocused) {
+    //         getItem("loggedInUser").then(user => {
+    //             if(user){
+    //                 navigation.navigate('UserTitle', {user: route.params.item})
+
+    //             }
+    //         })
+    //     }
+    //   }, [isFocused]);
 
     const inputRefs = useRef([])
     let passcode = []
@@ -39,7 +54,10 @@ const SubmitPassword = ({ route, navigation }) => {
         let pass = passcode.join('')
         if (pass === confirmPasscode) {
             await setItem('loggedInUser',route.params.item)
-            navigation.navigate('UserTitle', {user: route.params.item})
+            navigation.reset({
+                index: 0,
+                routes: [{ name: 'UserTitle',params:  {user: route.params.item} }],
+              });
         } else {
             Alert.alert('Wrong Password!', 'Please enter correct Password to proceed', [
                 { text: 'OK', onPress: () => console.log('Password Failed.') }
@@ -56,7 +74,7 @@ const SubmitPassword = ({ route, navigation }) => {
                 <View style={styles.textInputView}>
                     {[...new Array(4)].map((item, index) => {
                         return (
-                            <TextInput
+                            <TextInput key = {index}
                                 ref={ref => {
                                     if (ref && !inputRefs.current.includes(ref)) {
                                         inputRefs.current = [...inputRefs.current, ref]

@@ -2,22 +2,28 @@ import React from 'react'
 import {
     Text,
     View,
-    StyleSheet
+    StyleSheet,
+    TouchableOpacity
 } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import IconNew from 'react-native-vector-icons/Fontisto'
-import FlatListTest from './FlatListTest'
+import VehicleListDetail from './VehicleListDetail'
 
-const VehicleList = () => {
+const VehicleList = ({ navigation }) => {
     return (
         <View style={styles.mainView}>
             <View style={styles.headerView}>
                 <Text style={styles.headerText}>Vehicles</Text>
+                <TouchableOpacity
+                    onPress={() => navigation.navigate("VehicleDetails", { isAdd: true,isDelete: false,isUpdate: false })}
+                    style={styles.addButton}
+                >
+                    <Text style={{ color: "#2D4877", fontSize: 18 }}>Add</Text>
+                </TouchableOpacity>
             </View>
 
             <View style={{
                 flex: 1,
-                // height: "100%",
                 backgroundColor: "#99AFC9",
                 borderRadius: 10,
                 margin: 10,
@@ -25,64 +31,8 @@ const VehicleList = () => {
                 borderColor: "white",
             }}
             >
-                <FlatListTest />
+                <VehicleListDetail navigation={navigation} />
             </View>
-
-            {/* <View style={styles.mainContainer}>
-                <View style={styles.outerContainer}>
-                    <Icon name="motorcycle" size={80} color="grey" />
-                    <Text style={{ color: "grey", fontSize: 15, marginTop: 20 }}>No Image</Text>
-                </View>
-
-                <View style={styles.innerContainer}>
-                    <View style={{ margin: 5 }}>
-                        <Text>Yamaha FZ</Text>
-                        <Text style={{ fontSize: 10, marginTop: 5 }}>2 Wheeler</Text>
-                    </View>
-                    <Text style={{
-                        margin: 10,
-                        textAlign: "right",
-                        position: "absolute",
-                        top: 0,
-                        right: 0
-                    }}>
-                        155 CC
-                    </Text>
-                </View>
-            </View> */}
-
-            {/* <View style={styles.mainContainer}>
-                <View style={styles.outerContainer}>
-                    <IconNew name="automobile" size={120} color="grey" />
-                    <Text style={{ color: "grey", fontSize: 15 }}>No Image</Text>
-                </View>
-
-                <View style={styles.innerContainer}>
-                    <View style={{ margin: 5 }}>
-
-                        <Text>Yamaha</Text>
-                        <Text style={{ fontSize: 10, marginTop: 5 }}>2 Wheeler</Text>
-                    </View>
-                    <Text style={{
-                        margin: 10,
-                        textAlign: "right",
-                        position: "absolute",
-                        top: 0,
-                        right: 0
-                    }}>
-                        155 CC
-                    </Text>
-                </View>
-            </View> */}
-
-
-            {/* <View style={styles.mainContainer}>
-                <View style={styles.outerContainer}>
-                </View>
-                <View style={styles.innerContainer}>
-                    <Text>Yamaha</Text>
-                </View>
-            </View> */}
         </View>
     )
 }
@@ -95,6 +45,7 @@ const styles = StyleSheet.create({
     headerView: {
         alignItems: "center",
         justifyContent: "center",
+        flexDirection: "row"
     },
     headerText: {
         fontSize: 20,
@@ -121,6 +72,22 @@ const styles = StyleSheet.create({
         backgroundColor: "white",
         borderBottomStartRadius: 10,
         borderBottomEndRadius: 10
+    },
+    addButton: {
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#99AFC9",
+        height: 35,
+        width: 100,
+        borderRadius: 10,
+        borderWidth: 3,
+        borderColor: "#436090",
+        position: "absolute",
+        right: 0,
+        top: 0,
+        // margin: 20,
+        marginTop: 15,
+        marginRight: 10
     }
 })
 

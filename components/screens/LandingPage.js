@@ -22,8 +22,10 @@ const LandingPage = ({navigation}) => {
     useEffect(() => {
 
         getItem('users').then(rep => {
-            console.log('users yup',rep)
-            setUsers(Object.values(rep))
+            console.log('users',rep)
+            if(rep){
+                setUsers(Object.values(rep))
+            }
             //clear();
         }, [])
 
@@ -39,8 +41,9 @@ const LandingPage = ({navigation}) => {
           // Perform actions you want when the screen is focused.
           // This could be fetching data, re-rendering components, or any other refresh logic.
           getItem('users').then(rep => {
-              console.log('users yup',rep)
-              setUsers(Object.values(rep))
+             if(rep){
+                setUsers(Object.values(rep))
+             }
               //clear();
           })
         }

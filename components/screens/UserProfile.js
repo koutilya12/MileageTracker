@@ -17,10 +17,6 @@ const UserProfile = (props) => {
     //     userDetails.userId ? "navigate to password screen" : null
     // })
 
-    const onPressHandler = () => {
-        props.navigation.navigate('UserTitle')
-    }
-
     return (
         <View style={styles.qView}>
             <Text style={styles.qText}>Who are you?</Text>
@@ -28,22 +24,24 @@ const UserProfile = (props) => {
                 {
                     props.users.map((item) => {
                         return (
-                            <View style={styles.addView}>
+                            <View key = {item.id} style={styles.addView}>
                                 {
-                                    item.img ?
-                                        <TouchableOpacity onPress={onPressHandler}>
+                                    item.imgSrc ?
+                                        <TouchableOpacity onPress={() => {props.navigation.navigate("SubmitPassword", {item})}}>
                                             <Image
-                                                style={styles.addImage}
-                                                source={item.img}
+                                                style={styles.profilePic}
+                                                source={{
+                                                    uri: item.imgSrc
+                                                }}
                                             />
                                         </TouchableOpacity> :
-                                        <View style={{ borderWidth: 2, borderRadius: 100, borderColor: "grey" }}>
+                                        <TouchableOpacity style={{ borderWidth: 2, borderRadius: 100, borderColor: "grey" }}>
                                             <View style={{ borderWidth: 2, borderRadius: 100, borderColor: "white" }}>
                                                 <View style={styles.iconUser}>
                                                     <Icon onPress={() => {props.navigation.navigate("SubmitPassword", {item})}} name="user" size={25} color="white" />
                                                 </View>
                                             </View>
-                                        </View>
+                                        </TouchableOpacity>
                                 }
                                 <Text style={styles.userName}>{item.name}</Text>
                             </View>
@@ -108,12 +106,16 @@ const styles = StyleSheet.create({
         height: 50,
         width: 50,
         backgroundColor: "#3B76DE",
-        // backgroundColor: "#4A89D1",
         borderRadius: 100,
         alignItems: "center",
         justifyContent: "center",
         borderWidth: 1,
         borderColor: "grey"
+    },
+    profilePic: {
+        height: 50,
+        width: 50,
+        borderRadius: 50
     }
 })
 

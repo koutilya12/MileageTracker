@@ -5,12 +5,13 @@ import {
     StyleSheet,
     TextInput,
     TouchableOpacity,
+    Alert,
     Button,
     KeyboardAvoidingView
 } from 'react-native'
 import { Calendar } from 'react-native-calendars';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import {getItem,setItem} from '../../utils/AsyncStorage';
+import { getItem, setItem } from '../../utils/AsyncStorage';
 import { create } from 'zustand';
 
 
@@ -22,43 +23,55 @@ const defaultData = {
 
 const refuellingStore = create((set) => ({
     refuelData: defaultData,
-    setRefuelData: (newRefuelData) => set((state) => ({ refuelData: newRefuelData}))
+    setRefuelData: (newRefuelData) => set((state) => ({ refuelData: newRefuelData }))
 }))
 
 
-const AddRefuelling = ({navigation, route}) => {
-    const refuelData  = refuellingStore((state) => state.refuelData)
+const AddRefuelling = ({ navigation, route }) => {
+    const refuelData = refuellingStore((state) => state.refuelData)
     const setRefuelData = refuellingStore((state) => state.setRefuelData)
 
-    const saveRefuellingData = () => {
-        console.log('rrrr1', route)
-        let key2 = "refuellingList_" + route.params.vehicle.id + route.params.userId
-        getItem(key2).then(refuelList =>{
-            if(refuelList) {
-                refuelList.push(refuelData)
-                setItem(key2, refuelList)
-            } else {
-                setItem(key2, [refuelData])
-            }
-        })
-        navigation.navigate("UserTitle")
+    const validationCheck = () => {
+        if (refuelData && refuelData.refuellingDate && refuelData.total && refuelData.fuel)
+            return true
+        return false
+    }
+
+    const saveRefuellingData = async () => {
+        if (validationCheck()) {
+            let user = await getItem("loggedInUser")
+            let key2 = "refuellingList_" + route.params.selectedVechicle.value + route.params.userId
+            getItem(key2).then(refuelList => {
+                if (refuelList) {
+                    refuelList.push(refuelData)
+                    setItem(key2, refuelList)
+                } else {
+                    setItem(key2, [refuelData])
+                }
+            })
+            navigation.navigate("UserTitle")
+        } else {
+            Alert.alert('', 'Enter all the required details', [
+                { text: 'OK', onPress: () => console.log('Add Vehicle validation failed.') }
+            ])
+        }
     }
 
     const onChangeValue = (text) => {
-        let refuelData1 = {...refuelData}
+        let refuelData1 = { ...refuelData }
         refuelData1["fuel"] = text
         setRefuelData(refuelData1)
     }
 
     const calculateTotal = () => {
         let val = (parseFloat(refuelData.fuel) * 110).toString()
-        let refuelData1 = {...refuelData}
+        let refuelData1 = { ...refuelData }
         refuelData1["total"] = val
         setRefuelData(refuelData1)
     }
 
     const setRefuellingDate = (day) => {
-        let refuelData1 = {...refuelData}
+        let refuelData1 = { ...refuelData }
         refuelData1["refuellingDate"] = day
         setRefuelData(refuelData1)
     }
@@ -66,18 +79,18 @@ const AddRefuelling = ({navigation, route}) => {
     return (
         <View style={styles.body} >
             <KeyboardAwareScrollView style={styles.mainView}>
-                <Text style={styles.headerText}>Enter details for Pulsar</Text>
-                    <Calendar
-                        current = {refuelData.refuellingDate}
-                        onDayPress={day => {
-                            console.log('selected day', day.dateString);
-                            setRefuellingDate(day.dateString);
-                        }}
-                        markedDates={{
-                            [refuelData.refuellingDate]: {selected: true,selectedColor:'blue', disableTouchEvent: true,marked: true}
-                          }}
-                        style={styles.calendarStyles}
-                    />
+                <Text style={styles.headerText}>Enter details for {route.params.selectedVechicle.label}</Text>
+                <Calendar
+                    current={refuelData.refuellingDate}
+                    onDayPress={day => {
+                        console.log('selected day', day.dateString);
+                        setRefuellingDate(day.dateString);
+                    }}
+                    markedDates={{
+                        [refuelData.refuellingDate]: { selected: true, selectedColor: 'blue', disableTouchEvent: true, marked: true }
+                    }}
+                    style={styles.calendarStyles}
+                />
 
                 <Text style={styles.subheadText}>Fuel</Text>
                 <View style={{ flexDirection: "row", margin: 5 }}>
@@ -100,19 +113,19 @@ const AddRefuelling = ({navigation, route}) => {
                 <View style={styles.footerView}>
                     <View style={styles.innerFooter}>
                         <Text style={styles.innerText}>Fuel per Lit</Text>
-                        <Text style={styles.innerValue}>Rs. 110</Text>
+                        <Text style={styles.innerValue}>₹. 110</Text>
                     </View>
                     <View style={styles.innerFooter}>
                         <Text style={styles.innerText}>Total</Text>
-                        <Text style={styles.innerValue}>{refuelData.total}</Text>
+                        <Text style={styles.innerValue}>₹. {refuelData.total != 'NaN' ? refuelData.total : ''}</Text>
                     </View>
                 </View>
-                <TouchableOpacity 
-                  onPress={saveRefuellingData}
-                  style={styles.buttonFooter}>
+                <TouchableOpacity
+                    onPress={saveRefuellingData}
+                    style={styles.buttonFooter}>
                     <Text style={styles.buttonText}>Save</Text>
                 </TouchableOpacity>
-        </KeyboardAwareScrollView>
+            </KeyboardAwareScrollView>
         </View>
 
     )

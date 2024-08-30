@@ -4,7 +4,7 @@ import {
     View
 } from 'react-native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import AddVehicle from '../../components/screens/AddVehicle'
+import UserVehicleHome from '../../components/screens/UserVehicleHome'
 import CreateAccount from '../../components/screens/CreateAccount'
 import VehicleList from '../../components/screens/VehiclesList'
 import UserHome from '../../components/screens/UserHome'

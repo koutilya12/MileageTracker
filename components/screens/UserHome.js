@@ -5,17 +5,20 @@ import {
     StyleSheet,
     Image,
     TouchableOpacity,
+    Alert
 } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome';
-// import AddVehicle from './AddVehicle'
+// import UserVehicleHome from './UserVehicleHome'
 import { LinearGradient } from 'expo-linear-gradient';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import AddVehicle from '../../components/screens/AddVehicle'
+import UserVehicleHome from '../../components/screens/UserVehicleHome'
 import CreateAccount from '../../components/screens/CreateAccount'
 import VehicleList from '../../components/screens/VehiclesList'
-import {getItem,setItem} from '../../utils/AsyncStorage';
+import { getItem, setItem, removeItem } from '../../utils/AsyncStorage';
+import { useIsFocused } from '@react-navigation/native';
 
- const RenderUserHome = ({navigation}) => {
+
+const RenderUserHome = ({ navigation }) => {
 
     return (
         <View>
@@ -31,7 +34,7 @@ import {getItem,setItem} from '../../utils/AsyncStorage';
                 <TouchableOpacity
                     style={styles.buttonStyle}
                     onPress={() => {
-                        navigation.navigate('VehicleDetails')
+                        navigation.navigate('VehicleDetails', { isAdd: true,isDelete: false,isUpdate: false })
                     }}
                 >
                     <Text style={styles.buttonText}>Add Vehicle</Text>
@@ -45,35 +48,57 @@ import {getItem,setItem} from '../../utils/AsyncStorage';
     )
 }
 
-const UserHome = ({navigation}) => {
+const UserHome = ({ navigation }) => {
+    const isFocused = useIsFocused();
 
     const [user, setUser] = useState({})
     const [detailsFlag, setDetailsFlag] = useState(false)
     let [vehiclesList, setVehiclesList] = useState({})
 
     useEffect(() => {
-        getItem('loggedInUser').then(userRep => {
-            console.log('---->1', userRep)
-            setUser(userRep)
-            getItem('vehicleDetails_'+userRep.id).then(rep => {
-                console.log('---->2', rep)
-                console.log('---->3', userRep)
-                setVehiclesList(rep)
-                console.log('---->4', vehiclesList)
-                if(rep)
-                    setDetailsFlag(true)
+        if (isFocused) {
+            getItem('loggedInUser').then(userRep => {
+                setUser(userRep)
+                getItem('vehicleDetails_' + userRep.id).then(rep => {
+                    setVehiclesList(rep)
+                    if (rep)
+                        setDetailsFlag(true)
+                })
             })
-        })
+        }
 
 
-    }, [])
+    }, [isFocused])
+
+
+    const logoutHandler = () => {
+        Alert.alert("Logout", "Press ok to logout", [
+            {
+                text: 'Cancel',
+                onPress: () => console.log('Cancel Pressed'),
+                style: 'cancel',
+            },
+            {
+                text: 'OK', onPress: async () => {
+                    console.log('Logout successful.')
+                    await removeItem('selectedVehicle_')
+                    await removeItem('loggedInUser')
+                    navigation.reset({
+                        index: 0,
+                        routes: [{ name: 'Landing' }],
+                    });
+                }
+            }
+        ]
+        )
+    }
 
     return (
         <LinearGradient colors={["#b0e0e6", "white"]} style={styles.container} >
             <View style={styles.headSection}>
-                <View style={{ marginRight: "auto" }}>
-                    <Icon style={{ left: 5 }} name="user" size={20} />
-                </View>
+                <TouchableOpacity onPress={logoutHandler} style={{ marginRight: "auto", padding: 10 }}>
+                    <Icon name="user" size={20} />
+                </TouchableOpacity>
                 <Image
                     style={styles.logoImage}
                     source={require('../../assets/images/mlogonew.png')}
@@ -81,10 +106,9 @@ const UserHome = ({navigation}) => {
             </View>
             <View style={styles.body}>
                 <Text style={styles.nameText}>Hi {user.name},</Text>
-        {console.log('????1', vehiclesList)}
 
             </View>
-            {detailsFlag ? <AddVehicle navigation={navigation} vehiclesList={vehiclesList} user={user} /> : <RenderUserHome navigation={navigation}/>}
+            {detailsFlag ? <UserVehicleHome navigation={navigation} vehiclesList={vehiclesList} user={user} /> : <RenderUserHome navigation={navigation} />}
         </LinearGradient>
     )
 }
